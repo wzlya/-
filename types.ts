@@ -6,6 +6,13 @@ export enum EmployeeStatus {
   TERMINATED = 'منتهي الخدمة'
 }
 
+export enum UserRole {
+  SUPER_ADMIN = 'مشرف عام',
+  BRANCH_MANAGER = 'مدير فرع',
+  DEPT_SUPERVISOR = 'رئيس قسم',
+  EMPLOYEE = 'موظف'
+}
+
 export interface WorkingDay {
   day: string;
   isOff: boolean;
@@ -18,21 +25,36 @@ export interface AttendanceRecord {
   employeeId: string;
   employeeName: string;
   date: string;
-  checkIn: string; // "HH:mm" or "--"
-  checkOut: string; // "HH:mm" or "--"
+  checkIn: string;
+  checkOut: string;
   status: 'حاضر' | 'متأخر' | 'غياب' | 'إجازة' | 'خروج مبكر';
   delayMinutes: number;
+  deductionAmount: number; 
+  bonusAmount: number;     
+  shiftSalary: number; // Earnings based on actual hours worked
   branchId?: string;
   departmentId?: string;
+}
+
+export interface RewardRecord {
+  id: string;
+  employeeId: string;
+  employeeName: string;
+  type: 'مكافأة' | 'خصم';
+  amount: number;
+  reason: string;
+  date: string;
+  status: 'معتمد' | 'ملغي';
+  createdBy: string;
 }
 
 export interface EvaluationCriteria {
   id: string;
   name: string;
   description: string;
-  weight: number; // 0-100
-  branchId?: string; // Optional scope
-  departmentId?: string; // Optional scope
+  weight: number;
+  branchId?: string;
+  departmentId?: string;
 }
 
 export interface EvaluationRecord {
@@ -42,8 +64,8 @@ export interface EvaluationRecord {
   evaluatorId: string;
   evaluatorName: string;
   date: string;
-  scores: { criteriaId: string; score: number }[]; // score 0-10
-  totalScore: number; // Calculated Weighted Average
+  scores: { criteriaId: string; score: number }[];
+  totalScore: number;
   comments: string;
   branchId?: string;
   departmentId?: string;
@@ -53,7 +75,7 @@ export interface PayrollEntry {
   id: string;
   employeeId: string;
   employeeName: string;
-  month: string; // "YYYY-MM"
+  month: string;
   baseSalary: number;
   overtimeAmount: number;
   autoFines: number;
@@ -62,9 +84,20 @@ export interface PayrollEntry {
   netSalary: number;
   status: 'قيد المراجعة' | 'تم الصرف';
   paymentDate?: string;
-  notes?: string; // Added field for administrative notes
+  notes?: string;
   branchId?: string;
   departmentId?: string;
+}
+
+export interface AdvanceRecord {
+  id: string;
+  employeeId: string;
+  employeeName: string;
+  totalAmount: number;
+  monthlyInstallment: number;
+  remainingAmount: number;
+  startDate: string;
+  status: 'نشط' | 'مكتمل' | 'مرفوض';
 }
 
 export interface Employee {
@@ -72,11 +105,11 @@ export interface Employee {
   name: string;
   code: string;
   password?: string;
+  role: UserRole;
   email: string;
   phone: string;
   branchId?: string;
   departmentId?: string;
-  positionId?: string; 
   position: string; 
   level: string;
   status: EmployeeStatus;
@@ -92,11 +125,10 @@ export interface Employee {
   allowOvertime: boolean;
   allowLateEntry: boolean;
   lateFineAmount: number;
+  allowEarlyExit: boolean; // New
+  earlyExitGracePeriod: number; // New
+  earlyExitFineAmount: number; // New
   workingDays: WorkingDay[];
-  address?: string;
-  dob?: string;
-  bankAccount?: string;
-  reportsTo?: string; 
 }
 
 export interface CompanyDepartment {
@@ -126,5 +158,7 @@ export interface Applicant {
   experienceYears: number;
   status: 'جديد' | 'قيد المراجعة' | 'مقابلة' | 'مرفوض' | 'مقبول';
   applyDate: string;
-  cvUrl?: string;
+  branchId?: string;
+  departmentId?: string;
+  notes?: string;
 }
