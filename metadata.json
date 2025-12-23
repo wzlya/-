@@ -1,0 +1,7 @@
+{
+  "name": "نظام إدارة الموارد البشرية المتكامل - المدار",
+  "description": "An enterprise-grade HRMS designed for the Iraqi market, featuring full Arabic RTL support, IQD currency integration, and comprehensive modules for payroll, attendance, and organizational hierarchy.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
